@@ -11,8 +11,8 @@ from . import endpoints
 from landcoverloss.responders import ErrorResponder
 from landcoverloss.utils.http import request_to_microservice
 
-@endpoints.route('/hello', methods=['GET'])
-def say_hello():
+@endpoints.route('/landcoverloss', methods=['GET'])
+def test():
     """Query GEE Dataset Endpoint"""
-    logging.info('Doing GEE Query')
-    return jsonify({'data': 'hello'}), 200
+    logging.info('running test')
+    print "it worked!"
