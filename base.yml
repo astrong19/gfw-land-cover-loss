@@ -1,7 +1,7 @@
 base:
   build: .
   ports:
-    - "5700:5700"
+    - "62141:62141"
   environment:
-    PORT: 5700
+    PORT: 62141
   container_name: gfw-land-cover-loss
