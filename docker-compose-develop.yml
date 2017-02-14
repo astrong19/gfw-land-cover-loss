@@ -3,7 +3,7 @@ develop:
     file: base.yml
     service: base
   ports:
-    - "35733:35730"
+    - "62141:62141"
   container_name: gfw-land-cover-loss
   environment:
     ENVIRONMENT: dev
