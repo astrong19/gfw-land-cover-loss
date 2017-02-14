@@ -1,8 +1,8 @@
 {
     "swagger": "1.0",
     "info": {
-        "title": "MS PYTHON",
-        "description": "MS PYTHON",
+        "title": "GFW Land Cover Loss",
+        "description": "Intersects annual tree cover loss with global land cover data using arcgis image services",
         "version": "1.0.0"
     },
     "host": "staging-api.globalforestwatch.org",

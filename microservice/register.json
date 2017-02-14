@@ -1,12 +1,12 @@
 {
 	"name": "#(service.name)",
 	"endpoints": [{
-		"path": "/hello",
+		"path": "/landcoverloss",
 		"method": "GET",
 		"binary": true,
 		"redirect": {
 			"method": "GET",
-			"path": "/api/v1/ms/hello"
+			"path": "/api/v1/ms/landcoverloss"
 		}
 	}]
 }
