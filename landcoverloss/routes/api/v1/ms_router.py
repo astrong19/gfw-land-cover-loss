@@ -13,6 +13,6 @@ from landcoverloss.utils.http import request_to_microservice
 
 @endpoints.route('/landcoverloss', methods=['GET'])
 def test():
-    """Query GEE Dataset Endpoint"""
+    """Test service"""
     logging.info('running test')
-    print "it worked!"
+    return jsonify({'data': 'it worked!'}), 200
