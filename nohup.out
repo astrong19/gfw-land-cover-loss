@@ -1,0 +1,219 @@
+Building develop
+Step 1/23 : FROM python:2.7-alpine
+ ---> c80455665c57
+Step 2/23 : MAINTAINER Sergio Gordillo sergio.gordillo@vizzuality.com
+ ---> Using cache
+ ---> 49bae997bae6
+Step 3/23 : ENV NAME gfw-land-cover-loss
+ ---> Using cache
+ ---> 9c21caad146f
+Step 4/23 : ENV USER microservice
+ ---> Using cache
+ ---> a6a6b2e5b705
+Step 5/23 : RUN apk update && apk upgrade &&    apk add --no-cache --update bash git openssl-dev build-base alpine-sdk    libffi-dev
+ ---> Using cache
+ ---> 317df3589f9c
+Step 6/23 : RUN addgroup $USER && adduser -s /bin/bash -D -G $USER $USER
+ ---> Using cache
+ ---> d5a09cad11e2
+Step 7/23 : RUN easy_install pip && pip install --upgrade pip
+ ---> Using cache
+ ---> dda0c0a617e9
+Step 8/23 : RUN pip install virtualenv gunicorn gevent
+ ---> Using cache
+ ---> 6a48c0d44c92
+Step 9/23 : RUN mkdir -p /opt/$NAME
+ ---> Using cache
+ ---> b4fe1f21cf5e
+Step 10/23 : RUN cd /opt/$NAME && virtualenv venv && source venv/bin/activate
+ ---> Using cache
+ ---> 0075c142a5f3
+Step 11/23 : COPY requirements.txt /opt/$NAME/requirements.txt
+ ---> Using cache
+ ---> 129b84b9a992
+Step 12/23 : RUN cd /opt/$NAME && pip install -r requirements.txt
+ ---> Using cache
+ ---> ee1a48004e82
+Step 13/23 : COPY entrypoint.sh /opt/$NAME/entrypoint.sh
+ ---> Using cache
+ ---> 3dd3c567b65a
+Step 14/23 : COPY main.py /opt/$NAME/main.py
+ ---> Using cache
+ ---> 564e26f25e57
+Step 15/23 : COPY gunicorn.py /opt/$NAME/gunicorn.py
+ ---> Using cache
+ ---> fba85d742847
+Step 16/23 : WORKDIR /opt/$NAME
+ ---> Using cache
+ ---> e0dbed125c6e
+Step 17/23 : COPY ./landcoverloss /opt/$NAME/landcoverloss
+ ---> 8c03f89a685f
+Removing intermediate container 0f3c9ab9e4b3
+Step 18/23 : COPY ./microservice /opt/$NAME/microservice
+ ---> 374da09c49b0
+Removing intermediate container 67f41058c67e
+Step 19/23 : COPY ./tests /opt/$NAME/tests
+ ---> fc108a496e70
+Removing intermediate container 44b3e5e232a8
+Step 20/23 : RUN chown $USER:$USER /opt/$NAME
+ ---> Running in a62a6587f1c5
+ ---> 110705bec32a
+Removing intermediate container a62a6587f1c5
+Step 21/23 : EXPOSE 62141
+ ---> Running in 05730807ebbc
+ ---> c77eb7ad5a73
+Removing intermediate container 05730807ebbc
+Step 22/23 : USER $USER
+ ---> Running in b4c7583b7977
+ ---> bc0cda5d05ef
+Removing intermediate container b4c7583b7977
+Step 23/23 : ENTRYPOINT ./entrypoint.sh
+ ---> Running in 2268eccc6abc
+ ---> eef7b4786188
+Removing intermediate container 2268eccc6abc
+Successfully built eef7b4786188
+Recreating gfw-land-cover-loss
+Attaching to gfw-land-cover-loss
+[36mgfw-land-cover-loss |[0m Running Development Server
+[36mgfw-land-cover-loss |[0m [20170214-18:47PM] [werkzeug] [INFO]  * Running on http://0.0.0.0:62141/ (Press CTRL+C to quit)
+[36mgfw-land-cover-loss |[0m [20170214-18:47PM] [werkzeug] [INFO]  * Restarting with stat
+[36mgfw-land-cover-loss |[0m [20170214-18:47PM] [werkzeug] [WARNING]  * Debugger is active!
+[36mgfw-land-cover-loss |[0m [20170214-18:47PM] [werkzeug] [INFO]  * Debugger pin code: 262-920-638
+[36mgfw-land-cover-loss |[0m [20170214-18:47PM] [requests.packages.urllib3.connectionpool] [DEBUG] Starting new HTTP connection (1): 172.30.2.76
+[36mgfw-land-cover-loss |[0m [20170214-18:47PM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 18:47:07] "GET /info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiaW5zZXJ0aW5nIjp0cnVlLCJnZXR0ZXJzIjp7ImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH19LCJ3YXNQb3B1bGF0ZWQiOmZhbHNlLCJzY29wZSI6eyJfX3YiOjAsIm5hbWUiOiJtcyIsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi43Njo2MjE0MSIsInZlcnNpb24iOjEsIl9pZCI6IjU4YTM1MGFiYTMzZWNmMDAxMzQ3NzY5OSIsInRhZ3MiOltdLCJlbmRwb2ludHMiOltdLCJ1cGRhdGVkQXQiOiIyMDE3LTAyLTE0VDE4OjQ3OjA3Ljg2N1oiLCJpbmZvU3RhdHVzIjp7Im51bVJldHJpZXMiOjB9LCJzdGF0dXMiOiJwZW5kaW5nIiwicGF0aExpdmUiOiIvcGluZyIsInBhdGhJbmZvIjoiL2luZm8ifSwiYWN0aXZlUGF0aHMiOnsicGF0aHMiOnsidmVyc2lvbiI6InJlcXVpcmUiLCJ1cGRhdGVkQXQiOiJyZXF1aXJlIiwiaW5mb1N0YXR1cy5udW1SZXRyaWVzIjoicmVxdWlyZSIsInBhdGhMaXZlIjoicmVxdWlyZSIsInBhdGhJbmZvIjoicmVxdWlyZSIsInVybCI6InJlcXVpcmUiLCJuYW1lIjoicmVxdWlyZSJ9LCJzdGF0ZXMiOnsiaWdub3JlIjp7fSwiZGVmYXVsdCI6e30sImluaXQiOnt9LCJtb2RpZnkiOnt9LCJyZXF1aXJlIjp7InZlcnNpb24iOnRydWUsInVwZGF0ZWRBdCI6dHJ1ZSwiaW5mb1N0YXR1cy5udW1SZXRyaWVzIjp0cnVlLCJwYXRoTGl2ZSI6dHJ1ZSwicGF0aEluZm8iOnRydWUsInVybCI6dHJ1ZSwibmFtZSI6dHJ1ZX19LCJzdGF0ZU5hbWVzIjpbInJlcXVpcmUiLCJtb2RpZnkiLCJpbml0IiwiZGVmYXVsdCIsImlnbm9yZSJdfSwiZW1pdHRlciI6eyJkb21haW4iOm51bGwsIl9ldmVudHMiOnt9LCJfZXZlbnRzQ291bnQiOjIsIl9tYXhMaXN0ZW5lcnMiOjB9fSwiaXNOZXciOmZhbHNlLCJfZG9jIjp7InBhdGhJbmZvIjoiL2luZm8iLCJwYXRoTGl2ZSI6Ii9waW5nIiwic3RhdHVzIjoicGVuZGluZyIsImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH0sInVwZGF0ZWRBdCI6IjIwMTctMDItMTRUMTg6NDc6MDcuODY3WiIsImVuZHBvaW50cyI6W10sInRhZ3MiOltdLCJfaWQiOiI1OGEzNTBhYmEzM2VjZjAwMTM0Nzc2OTkiLCJ2ZXJzaW9uIjoxLCJ1cmwiOiJodHRwOi8vMTcyLjMwLjIuNzY6NjIxNDEiLCJuYW1lIjoibXMiLCJfX3YiOjB9LCJpYXQiOjE0ODcwOTgwMjd9.EObcDCQT1FvXXDqhtLyUuCcaHFWrdAgMt8GMvHF1xgo&url=http://localhost:9000 HTTP/1.1" 200 -
+[36mgfw-land-cover-loss |[0m [20170214-18:47PM] [requests.packages.urllib3.connectionpool] [DEBUG] http://172.30.2.76:9000 "POST /api/v1/microservice HTTP/1.1" 200 644
+[36mgfw-land-cover-loss |[0m [20170214-18:47PM] [requests.packages.urllib3.connectionpool] [DEBUG] Starting new HTTP connection (1): 172.30.2.76
+[36mgfw-land-cover-loss |[0m [20170214-18:47PM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 18:47:08] "GET /info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiaW5zZXJ0aW5nIjp0cnVlLCJnZXR0ZXJzIjp7ImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH19LCJ3YXNQb3B1bGF0ZWQiOmZhbHNlLCJzY29wZSI6eyJfX3YiOjAsIm5hbWUiOiJtcyIsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi43Njo2MjE0MSIsInZlcnNpb24iOjEsIl9pZCI6IjU4YTM1MGFjYTMzZWNmMDAxMzQ3NzY5ZCIsInRhZ3MiOltdLCJlbmRwb2ludHMiOltdLCJ1cGRhdGVkQXQiOiIyMDE3LTAyLTE0VDE4OjQ3OjA4LjA2MFoiLCJpbmZvU3RhdHVzIjp7Im51bVJldHJpZXMiOjB9LCJzdGF0dXMiOiJwZW5kaW5nIiwicGF0aExpdmUiOiIvcGluZyIsInBhdGhJbmZvIjoiL2luZm8ifSwiYWN0aXZlUGF0aHMiOnsicGF0aHMiOnsidmVyc2lvbiI6InJlcXVpcmUiLCJ1cGRhdGVkQXQiOiJyZXF1aXJlIiwiaW5mb1N0YXR1cy5udW1SZXRyaWVzIjoicmVxdWlyZSIsInBhdGhMaXZlIjoicmVxdWlyZSIsInBhdGhJbmZvIjoicmVxdWlyZSIsInVybCI6InJlcXVpcmUiLCJuYW1lIjoicmVxdWlyZSJ9LCJzdGF0ZXMiOnsiaWdub3JlIjp7fSwiZGVmYXVsdCI6e30sImluaXQiOnt9LCJtb2RpZnkiOnt9LCJyZXF1aXJlIjp7InZlcnNpb24iOnRydWUsInVwZGF0ZWRBdCI6dHJ1ZSwiaW5mb1N0YXR1cy5udW1SZXRyaWVzIjp0cnVlLCJwYXRoTGl2ZSI6dHJ1ZSwicGF0aEluZm8iOnRydWUsInVybCI6dHJ1ZSwibmFtZSI6dHJ1ZX19LCJzdGF0ZU5hbWVzIjpbInJlcXVpcmUiLCJtb2RpZnkiLCJpbml0IiwiZGVmYXVsdCIsImlnbm9yZSJdfSwiZW1pdHRlciI6eyJkb21haW4iOm51bGwsIl9ldmVudHMiOnt9LCJfZXZlbnRzQ291bnQiOjIsIl9tYXhMaXN0ZW5lcnMiOjB9fSwiaXNOZXciOmZhbHNlLCJfZG9jIjp7InBhdGhJbmZvIjoiL2luZm8iLCJwYXRoTGl2ZSI6Ii9waW5nIiwic3RhdHVzIjoicGVuZGluZyIsImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH0sInVwZGF0ZWRBdCI6IjIwMTctMDItMTRUMTg6NDc6MDguMDYwWiIsImVuZHBvaW50cyI6W10sInRhZ3MiOltdLCJfaWQiOiI1OGEzNTBhY2EzM2VjZjAwMTM0Nzc2OWQiLCJ2ZXJzaW9uIjoxLCJ1cmwiOiJodHRwOi8vMTcyLjMwLjIuNzY6NjIxNDEiLCJuYW1lIjoibXMiLCJfX3YiOjB9LCJpYXQiOjE0ODcwOTgwMjh9.TTvGLITKtKJq0AZ4DFwJMF2tSuqL-_tXkxyzm2-fhlk&url=http://localhost:9000 HTTP/1.1" 200 -
+[36mgfw-land-cover-loss |[0m [20170214-18:47PM] [requests.packages.urllib3.connectionpool] [DEBUG] http://172.30.2.76:9000 "POST /api/v1/microservice HTTP/1.1" 200 644
+[36mgfw-land-cover-loss |[0m it worked!
+[36mgfw-land-cover-loss |[0m [20170214-18:48PM] [root] [INFO] running test
+[36mgfw-land-cover-loss |[0m [20170214-18:48PM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 18:48:23] "GET /api/v1/ms/landcoverloss?loggedUser=null HTTP/1.1" 500 -
+[36mgfw-land-cover-loss |[0m Traceback (most recent call last):
+[36mgfw-land-cover-loss |[0m   File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1994, in __call__
+[36mgfw-land-cover-loss |[0m     return self.wsgi_app(environ, start_response)
+[36mgfw-land-cover-loss |[0m   File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1985, in wsgi_app
+[36mgfw-land-cover-loss |[0m     response = self.handle_exception(e)
+[36mgfw-land-cover-loss |[0m   File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1540, in handle_exception
+[36mgfw-land-cover-loss |[0m     reraise(exc_type, exc_value, tb)
+[36mgfw-land-cover-loss |[0m   File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+[36mgfw-land-cover-loss |[0m     response = self.full_dispatch_request()
+[36mgfw-land-cover-loss |[0m   File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1615, in full_dispatch_request
+[36mgfw-land-cover-loss |[0m     return self.finalize_request(rv)
+[36mgfw-land-cover-loss |[0m   File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1630, in finalize_request
+[36mgfw-land-cover-loss |[0m     response = self.make_response(rv)
+[36mgfw-land-cover-loss |[0m   File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1725, in make_response
+[36mgfw-land-cover-loss |[0m     raise ValueError('View function did not return a response')
+[36mgfw-land-cover-loss |[0m ValueError: View function did not return a response
+[36mgfw-land-cover-loss |[0m [20170214-18:48PM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 18:48:53] "GET /landcoverloss HTTP/1.1" 404 -
+[36mgfw-land-cover-loss |[0m [20170214-18:51PM] [root] [INFO] running test
+[36mgfw-land-cover-loss |[0m [20170214-18:51PM] [werkzeug] [INFO] 172.17.0.1 - - [14/Feb/2017 18:51:10] "GET /api/v1/ms/landcoverloss?loggedUser=null HTTP/1.1" 500 -
+[36mgfw-land-cover-loss |[0m Traceback (most recent call last):
+[36mgfw-land-cover-loss |[0m   File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1994, in __call__
+[36mgfw-land-cover-loss |[0m     return self.wsgi_app(environ, start_response)
+[36mgfw-land-cover-loss |[0m   File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1985, in wsgi_app
+[36mgfw-land-cover-loss |[0m     response = self.handle_exception(e)
+[36mgfw-land-cover-loss |[0m   File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1540, in handle_exception
+[36mgfw-land-cover-loss |[0m     reraise(exc_type, exc_value, tb)
+[36mgfw-land-cover-loss |[0m   File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1982, in wsgi_app
+[36mgfw-land-cover-loss |[0m     response = self.full_dispatch_request()
+[36mgfw-land-cover-loss |[0m   File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1615, in full_dispatch_request
+[36mgfw-land-cover-loss |[0m     return self.finalize_request(rv)
+[36mgfw-land-cover-loss |[0m   File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1630, in finalize_request
+[36mgfw-land-cover-loss |[0m     response = self.make_response(rv)
+[36mgfw-land-cover-loss |[0m   File "/usr/local/lib/python2.7/site-packages/flask/app.py", line 1725, in make_response
+[36mgfw-land-cover-loss |[0m     raise ValueError('View function did not return a response')
+[36mgfw-land-cover-loss |[0m ValueError: View function did not return a response
+Killing gfw-land-cover-loss ... 
+[1A[2KKilling gfw-land-cover-loss ... done[1BGracefully stopping... (press Ctrl+C again to force)
+Building develop
+Step 1/23 : FROM python:2.7-alpine
+ ---> c80455665c57
+Step 2/23 : MAINTAINER Sergio Gordillo sergio.gordillo@vizzuality.com
+ ---> Using cache
+ ---> 49bae997bae6
+Step 3/23 : ENV NAME gfw-land-cover-loss
+ ---> Using cache
+ ---> 9c21caad146f
+Step 4/23 : ENV USER microservice
+ ---> Using cache
+ ---> a6a6b2e5b705
+Step 5/23 : RUN apk update && apk upgrade &&    apk add --no-cache --update bash git openssl-dev build-base alpine-sdk    libffi-dev
+ ---> Using cache
+ ---> 317df3589f9c
+Step 6/23 : RUN addgroup $USER && adduser -s /bin/bash -D -G $USER $USER
+ ---> Using cache
+ ---> d5a09cad11e2
+Step 7/23 : RUN easy_install pip && pip install --upgrade pip
+ ---> Using cache
+ ---> dda0c0a617e9
+Step 8/23 : RUN pip install virtualenv gunicorn gevent
+ ---> Using cache
+ ---> 6a48c0d44c92
+Step 9/23 : RUN mkdir -p /opt/$NAME
+ ---> Using cache
+ ---> b4fe1f21cf5e
+Step 10/23 : RUN cd /opt/$NAME && virtualenv venv && source venv/bin/activate
+ ---> Using cache
+ ---> 0075c142a5f3
+Step 11/23 : COPY requirements.txt /opt/$NAME/requirements.txt
+ ---> Using cache
+ ---> 129b84b9a992
+Step 12/23 : RUN cd /opt/$NAME && pip install -r requirements.txt
+ ---> Using cache
+ ---> ee1a48004e82
+Step 13/23 : COPY entrypoint.sh /opt/$NAME/entrypoint.sh
+ ---> Using cache
+ ---> 3dd3c567b65a
+Step 14/23 : COPY main.py /opt/$NAME/main.py
+ ---> Using cache
+ ---> 564e26f25e57
+Step 15/23 : COPY gunicorn.py /opt/$NAME/gunicorn.py
+ ---> Using cache
+ ---> fba85d742847
+Step 16/23 : WORKDIR /opt/$NAME
+ ---> Using cache
+ ---> e0dbed125c6e
+Step 17/23 : COPY ./landcoverloss /opt/$NAME/landcoverloss
+ ---> Using cache
+ ---> 8c03f89a685f
+Step 18/23 : COPY ./microservice /opt/$NAME/microservice
+ ---> Using cache
+ ---> 374da09c49b0
+Step 19/23 : COPY ./tests /opt/$NAME/tests
+ ---> Using cache
+ ---> fc108a496e70
+Step 20/23 : RUN chown $USER:$USER /opt/$NAME
+ ---> Using cache
+ ---> 110705bec32a
+Step 21/23 : EXPOSE 62141
+ ---> Using cache
+ ---> c77eb7ad5a73
+Step 22/23 : USER $USER
+ ---> Using cache
+ ---> bc0cda5d05ef
+Step 23/23 : ENTRYPOINT ./entrypoint.sh
+ ---> Using cache
+ ---> eef7b4786188
+Successfully built eef7b4786188
+Starting gfw-land-cover-loss
+Attaching to gfw-land-cover-loss
+[36mgfw-land-cover-loss |[0m Running Development Server
+[36mgfw-land-cover-loss |[0m [20170215-16:22PM] [werkzeug] [INFO]  * Running on http://0.0.0.0:62141/ (Press CTRL+C to quit)
+[36mgfw-land-cover-loss |[0m [20170215-16:22PM] [werkzeug] [INFO]  * Restarting with stat
+[36mgfw-land-cover-loss |[0m [20170215-16:22PM] [werkzeug] [WARNING]  * Debugger is active!
+[36mgfw-land-cover-loss |[0m [20170215-16:22PM] [werkzeug] [INFO]  * Debugger pin code: 295-799-453
+[36mgfw-land-cover-loss |[0m [20170215-16:22PM] [requests.packages.urllib3.connectionpool] [DEBUG] Starting new HTTP connection (1): 172.30.2.76
+[36mgfw-land-cover-loss |[0m [20170215-16:22PM] [werkzeug] [INFO] 172.17.0.1 - - [15/Feb/2017 16:22:44] "GET /info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiaW5zZXJ0aW5nIjp0cnVlLCJnZXR0ZXJzIjp7ImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH19LCJ3YXNQb3B1bGF0ZWQiOmZhbHNlLCJzY29wZSI6eyJfX3YiOjAsIm5hbWUiOiJtcyIsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi43Njo2MjE0MSIsInZlcnNpb24iOjEsIl9pZCI6IjU4YTQ4MDU0NmRiM2M0MDAxMzBiYWRjMyIsInRhZ3MiOltdLCJlbmRwb2ludHMiOltdLCJ1cGRhdGVkQXQiOiIyMDE3LTAyLTE1VDE2OjIyOjQ0LjUxNFoiLCJpbmZvU3RhdHVzIjp7Im51bVJldHJpZXMiOjB9LCJzdGF0dXMiOiJwZW5kaW5nIiwicGF0aExpdmUiOiIvcGluZyIsInBhdGhJbmZvIjoiL2luZm8ifSwiYWN0aXZlUGF0aHMiOnsicGF0aHMiOnsidmVyc2lvbiI6InJlcXVpcmUiLCJ1cGRhdGVkQXQiOiJyZXF1aXJlIiwiaW5mb1N0YXR1cy5udW1SZXRyaWVzIjoicmVxdWlyZSIsInBhdGhMaXZlIjoicmVxdWlyZSIsInBhdGhJbmZvIjoicmVxdWlyZSIsInVybCI6InJlcXVpcmUiLCJuYW1lIjoicmVxdWlyZSJ9LCJzdGF0ZXMiOnsiaWdub3JlIjp7fSwiZGVmYXVsdCI6e30sImluaXQiOnt9LCJtb2RpZnkiOnt9LCJyZXF1aXJlIjp7InZlcnNpb24iOnRydWUsInVwZGF0ZWRBdCI6dHJ1ZSwiaW5mb1N0YXR1cy5udW1SZXRyaWVzIjp0cnVlLCJwYXRoTGl2ZSI6dHJ1ZSwicGF0aEluZm8iOnRydWUsInVybCI6dHJ1ZSwibmFtZSI6dHJ1ZX19LCJzdGF0ZU5hbWVzIjpbInJlcXVpcmUiLCJtb2RpZnkiLCJpbml0IiwiZGVmYXVsdCIsImlnbm9yZSJdfSwiZW1pdHRlciI6eyJkb21haW4iOm51bGwsIl9ldmVudHMiOnt9LCJfZXZlbnRzQ291bnQiOjIsIl9tYXhMaXN0ZW5lcnMiOjB9fSwiaXNOZXciOmZhbHNlLCJfZG9jIjp7InBhdGhJbmZvIjoiL2luZm8iLCJwYXRoTGl2ZSI6Ii9waW5nIiwic3RhdHVzIjoicGVuZGluZyIsImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH0sInVwZGF0ZWRBdCI6IjIwMTctMDItMTVUMTY6MjI6NDQuNTE0WiIsImVuZHBvaW50cyI6W10sInRhZ3MiOltdLCJfaWQiOiI1OGE0ODA1NDZkYjNjNDAwMTMwYmFkYzMiLCJ2ZXJzaW9uIjoxLCJ1cmwiOiJodHRwOi8vMTcyLjMwLjIuNzY6NjIxNDEiLCJuYW1lIjoibXMiLCJfX3YiOjB9LCJpYXQiOjE0ODcxNzU3NjR9.VzwV6iClU5uqH3yG-i4-dbCq8BMweE2Xj2DgeF0hkkY&url=http://localhost:9000 HTTP/1.1" 200 -
+[36mgfw-land-cover-loss |[0m [20170215-16:22PM] [requests.packages.urllib3.connectionpool] [DEBUG] http://172.30.2.76:9000 "POST /api/v1/microservice HTTP/1.1" 200 644
+[36mgfw-land-cover-loss |[0m [20170215-16:22PM] [requests.packages.urllib3.connectionpool] [DEBUG] Starting new HTTP connection (1): 172.30.2.76
+[36mgfw-land-cover-loss |[0m [20170215-16:22PM] [werkzeug] [INFO] 172.17.0.1 - - [15/Feb/2017 16:22:44] "GET /info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiaW5zZXJ0aW5nIjp0cnVlLCJnZXR0ZXJzIjp7ImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH19LCJ3YXNQb3B1bGF0ZWQiOmZhbHNlLCJzY29wZSI6eyJfX3YiOjAsIm5hbWUiOiJtcyIsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi43Njo2MjE0MSIsInZlcnNpb24iOjEsIl9pZCI6IjU4YTQ4MDU0NmRiM2M0MDAxMzBiYWRjNyIsInRhZ3MiOltdLCJlbmRwb2ludHMiOltdLCJ1cGRhdGVkQXQiOiIyMDE3LTAyLTE1VDE2OjIyOjQ0LjY5OFoiLCJpbmZvU3RhdHVzIjp7Im51bVJldHJpZXMiOjB9LCJzdGF0dXMiOiJwZW5kaW5nIiwicGF0aExpdmUiOiIvcGluZyIsInBhdGhJbmZvIjoiL2luZm8ifSwiYWN0aXZlUGF0aHMiOnsicGF0aHMiOnsidmVyc2lvbiI6InJlcXVpcmUiLCJ1cGRhdGVkQXQiOiJyZXF1aXJlIiwiaW5mb1N0YXR1cy5udW1SZXRyaWVzIjoicmVxdWlyZSIsInBhdGhMaXZlIjoicmVxdWlyZSIsInBhdGhJbmZvIjoicmVxdWlyZSIsInVybCI6InJlcXVpcmUiLCJuYW1lIjoicmVxdWlyZSJ9LCJzdGF0ZXMiOnsiaWdub3JlIjp7fSwiZGVmYXVsdCI6e30sImluaXQiOnt9LCJtb2RpZnkiOnt9LCJyZXF1aXJlIjp7InZlcnNpb24iOnRydWUsInVwZGF0ZWRBdCI6dHJ1ZSwiaW5mb1N0YXR1cy5udW1SZXRyaWVzIjp0cnVlLCJwYXRoTGl2ZSI6dHJ1ZSwicGF0aEluZm8iOnRydWUsInVybCI6dHJ1ZSwibmFtZSI6dHJ1ZX19LCJzdGF0ZU5hbWVzIjpbInJlcXVpcmUiLCJtb2RpZnkiLCJpbml0IiwiZGVmYXVsdCIsImlnbm9yZSJdfSwiZW1pdHRlciI6eyJkb21haW4iOm51bGwsIl9ldmVudHMiOnt9LCJfZXZlbnRzQ291bnQiOjIsIl9tYXhMaXN0ZW5lcnMiOjB9fSwiaXNOZXciOmZhbHNlLCJfZG9jIjp7InBhdGhJbmZvIjoiL2luZm8iLCJwYXRoTGl2ZSI6Ii9waW5nIiwic3RhdHVzIjoicGVuZGluZyIsImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH0sInVwZGF0ZWRBdCI6IjIwMTctMDItMTVUMTY6MjI6NDQuNjk4WiIsImVuZHBvaW50cyI6W10sInRhZ3MiOltdLCJfaWQiOiI1OGE0ODA1NDZkYjNjNDAwMTMwYmFkYzciLCJ2ZXJzaW9uIjoxLCJ1cmwiOiJodHRwOi8vMTcyLjMwLjIuNzY6NjIxNDEiLCJuYW1lIjoibXMiLCJfX3YiOjB9LCJpYXQiOjE0ODcxNzU3NjR9.Q1t4ph84e98-KHLWRA5UVv80MF-Wo8eo-EQAUIO_PeA&url=http://localhost:9000 HTTP/1.1" 200 -
+[36mgfw-land-cover-loss |[0m [20170215-16:22PM] [requests.packages.urllib3.connectionpool] [DEBUG] http://172.30.2.76:9000 "POST /api/v1/microservice HTTP/1.1" 200 644
+[36mgfw-land-cover-loss |[0m [20170215-16:24PM] [werkzeug] [INFO] 172.17.0.1 - - [15/Feb/2017 16:24:23] "GET /landcoverloss HTTP/1.1" 404 -
+[36mgfw-land-cover-loss |[0m [20170215-16:24PM] [werkzeug] [INFO] 172.17.0.1 - - [15/Feb/2017 16:24:53] "GET /landcoverloss HTTP/1.1" 404 -
+[36mgfw-land-cover-loss |[0m [20170215-16:44PM] [werkzeug] [INFO]  * Detected change in '/opt/gfw-land-cover-loss/landcoverloss/routes/api/v1/ms_router.py', reloading
+[36mgfw-land-cover-loss |[0m [20170215-16:44PM] [werkzeug] [INFO]  * Restarting with stat
+[36mgfw-land-cover-loss |[0m [20170215-16:44PM] [werkzeug] [WARNING]  * Debugger is active!
+[36mgfw-land-cover-loss |[0m [20170215-16:44PM] [werkzeug] [INFO]  * Debugger pin code: 295-799-453
+[36mgfw-land-cover-loss |[0m [20170215-16:44PM] [requests.packages.urllib3.connectionpool] [DEBUG] Starting new HTTP connection (1): 172.30.2.76
+[36mgfw-land-cover-loss |[0m [20170215-16:44PM] [werkzeug] [INFO] 172.17.0.1 - - [15/Feb/2017 16:44:51] "GET /info?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiaW5zZXJ0aW5nIjp0cnVlLCJnZXR0ZXJzIjp7ImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH19LCJ3YXNQb3B1bGF0ZWQiOmZhbHNlLCJzY29wZSI6eyJfX3YiOjAsIm5hbWUiOiJtcyIsInVybCI6Imh0dHA6Ly8xNzIuMzAuMi43Njo2MjE0MSIsInZlcnNpb24iOjEsIl9pZCI6IjU4YTQ4NTgzNmRiM2M0MDAxMzBiYWRjYiIsInRhZ3MiOltdLCJlbmRwb2ludHMiOltdLCJ1cGRhdGVkQXQiOiIyMDE3LTAyLTE1VDE2OjQ0OjUxLjQ4NFoiLCJpbmZvU3RhdHVzIjp7Im51bVJldHJpZXMiOjB9LCJzdGF0dXMiOiJwZW5kaW5nIiwicGF0aExpdmUiOiIvcGluZyIsInBhdGhJbmZvIjoiL2luZm8ifSwiYWN0aXZlUGF0aHMiOnsicGF0aHMiOnsidmVyc2lvbiI6InJlcXVpcmUiLCJ1cGRhdGVkQXQiOiJyZXF1aXJlIiwiaW5mb1N0YXR1cy5udW1SZXRyaWVzIjoicmVxdWlyZSIsInBhdGhMaXZlIjoicmVxdWlyZSIsInBhdGhJbmZvIjoicmVxdWlyZSIsInVybCI6InJlcXVpcmUiLCJuYW1lIjoicmVxdWlyZSJ9LCJzdGF0ZXMiOnsiaWdub3JlIjp7fSwiZGVmYXVsdCI6e30sImluaXQiOnt9LCJtb2RpZnkiOnt9LCJyZXF1aXJlIjp7InZlcnNpb24iOnRydWUsInVwZGF0ZWRBdCI6dHJ1ZSwiaW5mb1N0YXR1cy5udW1SZXRyaWVzIjp0cnVlLCJwYXRoTGl2ZSI6dHJ1ZSwicGF0aEluZm8iOnRydWUsInVybCI6dHJ1ZSwibmFtZSI6dHJ1ZX19LCJzdGF0ZU5hbWVzIjpbInJlcXVpcmUiLCJtb2RpZnkiLCJpbml0IiwiZGVmYXVsdCIsImlnbm9yZSJdfSwiZW1pdHRlciI6eyJkb21haW4iOm51bGwsIl9ldmVudHMiOnt9LCJfZXZlbnRzQ291bnQiOjIsIl9tYXhMaXN0ZW5lcnMiOjB9fSwiaXNOZXciOmZhbHNlLCJfZG9jIjp7InBhdGhJbmZvIjoiL2luZm8iLCJwYXRoTGl2ZSI6Ii9waW5nIiwic3RhdHVzIjoicGVuZGluZyIsImluZm9TdGF0dXMiOnsibnVtUmV0cmllcyI6MH0sInVwZGF0ZWRBdCI6IjIwMTctMDItMTVUMTY6NDQ6NTEuNDg0WiIsImVuZHBvaW50cyI6W10sInRhZ3MiOltdLCJfaWQiOiI1OGE0ODU4MzZkYjNjNDAwMTMwYmFkY2IiLCJ2ZXJzaW9uIjoxLCJ1cmwiOiJodHRwOi8vMTcyLjMwLjIuNzY6NjIxNDEiLCJuYW1lIjoibXMiLCJfX3YiOjB9LCJpYXQiOjE0ODcxNzcwOTF9.Ww7fg8p91lGY5l5LTbGs4QSLYSYzqMa8cj85FkFFHV8&url=http://localhost:9000 HTTP/1.1" 200 -
+[36mgfw-land-cover-loss |[0m [20170215-16:44PM] [requests.packages.urllib3.connectionpool] [DEBUG] http://172.30.2.76:9000 "POST /api/v1/microservice HTTP/1.1" 200 644
