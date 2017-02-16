@@ -17,7 +17,7 @@ from landcoverloss.utils.http import request_to_microservice
 #need to send the geostore id to the microservice and get back the geojson
 #/geostore/id
 #example: https://github.com/resource-watch/adapter-earth-engine/blob/master/adapterearthengine/utils/http.py
-#make geometry and argument... for geostore you get a hash... send it to the geostore, get the geometry, transform geostore to esri json
+#make geometry an argument... for geostore you get a hash... send it to the geostore, get the geometry, transform geostore to esri json
 
 @endpoints.route('/landcoverloss', methods=['GET'])
 def make_request():
@@ -35,7 +35,15 @@ def make_request():
             }]
         }), 400
 
-    geom = urllib.unquote(geo).decode()
+    #send geo to geostore and return geojson
+
+    geostore = 'http://production-api.globalforestwatch.org/geostore/{0}'.format(geo)
+
+    geo_resp = requests.get(url=geostore)
+    geojson = geo_resp.json()
+
+
+    direct_geometry = urllib.unquote(geo).decode()
 
     #geometry = '{"type":"Polygon","rings":[[[-52.108154296875,-8.537565350804018],[-52.437744140625,-9.156332560046778],[-52.020263671875,-9.329831355689176],[-51.690673828125,-8.733077421211563],[-52.108154296875,-8.537565350804018]]]}'
 
