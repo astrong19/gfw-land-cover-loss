@@ -43,7 +43,7 @@ def make_request():
 
     rendering_rule = '{"rasterFunction":"Arithmetic","rasterFunctionArguments":{"Raster":{"rasterFunction":"Remap","rasterFunctionArguments":{"InputRanges":[0,30,30,101],"OutputValues":[0,1],"Raster":"$2","AllowUnmatched":false}},"Raster2":{"rasterFunction":"Arithmetic","rasterFunctionArguments":{"Raster":{"rasterFunction":"Arithmetic","rasterFunctionArguments":{"Raster":{"rasterFunction":"Remap","rasterFunctionArguments":{"InputRanges":[1,16],"OutputValues":[16],"Raster":"$1","AllowUnmatched":false}},"Raster2":"$1","Operation":3}},"Raster2":"$3","Operation":1},"outputPixelType":"U8"},"Operation":3}}'
 
-    url = 'http://gis-gfw.wri.org/arcgis/rest/services/image_services/tree_cover_loss_year_wgs84/ImageServer/computeHistograms?geometry={0}&geometryType={1}&renderingRule={2}&f=json'.format(geom, shape, mosaic_rule)
+    url = 'http://gis-gfw.wri.org/arcgis/rest/services/image_services/tree_cover_loss_year_wgs84/ImageServer/computeHistograms?geometry={0}&geometryType={1}&renderingRule={2}&f=json'.format(geo, shape, mosaic_rule)
 
     resp = requests.get(url=url)
     data = resp.json()
