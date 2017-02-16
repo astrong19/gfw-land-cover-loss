@@ -3,6 +3,7 @@ import json
 import csv
 import StringIO
 import logging
+import urllib
 
 from flask import jsonify, request, Response, stream_with_context
 import requests
@@ -25,16 +26,16 @@ def make_request():
 
     shape = 'esriGeometryPolygon'
 
-    geom = request.args.get('geometry', None)
+    geo = request.args.get('geometry', None)
 
-    if not geom:
+    if not geo:
         return jsonify({'errors': [{
             'status': '400',
             'title': 'esri json should be included'
             }]
         }), 400
 
-    #geom = "'" + geo + "'"
+    geom = urllib.urlencode(geo)
 
     #geometry = '{"type":"Polygon","rings":[[[-52.108154296875,-8.537565350804018],[-52.437744140625,-9.156332560046778],[-52.020263671875,-9.329831355689176],[-51.690673828125,-8.733077421211563],[-52.108154296875,-8.537565350804018]]]}'
 
@@ -47,7 +48,4 @@ def make_request():
     resp = requests.get(url=url)
     data = resp.json()
 
-    return jsonify({'data': geom}), 200
-    # return jsonify({'data': data}), 200
-
-    #example request: curl "localhost:9000/landcoverloss?geometry={"type":"Polygon","rings":[[[-52.108154296875,-8.537565350804018],[-52.437744140625,-9.156332560046778],[-52.020263671875,-9.329831355689176],[-51.690673828125,-8.733077421211563],[-52.108154296875,-8.537565350804018]]]}"
+    return jsonify({'data': data}), 200
