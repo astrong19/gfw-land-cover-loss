@@ -26,16 +26,16 @@ def make_request():
 
     shape = 'esriGeometryPolygon'
 
-    geom = request.args.get('geometry', None)
+    geo = request.args.get('geometry', None)
 
-    if not geom:
+    if not geo:
         return jsonify({'errors': [{
             'status': '400',
             'title': 'esri json should be included'
             }]
         }), 400
 
-    # geom = urllib.urlencode(geo)
+    geom = urllib.unquote(geo).decode
 
     #geometry = '{"type":"Polygon","rings":[[[-52.108154296875,-8.537565350804018],[-52.437744140625,-9.156332560046778],[-52.020263671875,-9.329831355689176],[-51.690673828125,-8.733077421211563],[-52.108154296875,-8.537565350804018]]]}'
 
