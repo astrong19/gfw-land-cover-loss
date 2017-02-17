@@ -45,8 +45,9 @@ def get_geostore():
 
     geo_resp = requests.get(url=geostore)
     geojson = geo_resp.json()
+    print 'here is the geojson: %s' %(geojson)
 
-    return geojson
+    return jsonify(geojson), 200
 
 def get_esri_json():
 
@@ -64,7 +65,7 @@ def get_esri_json():
         r = requests.post("localhost:9000/geojson-ms-example/to-esri", headers=headers, json=payload)
         esri_json = r.json()
         print esri_json
-        return esri_json
+        return jsonify(esri_json), 200
 
     except Error:
          return jsonify({'errors': [{
