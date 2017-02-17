@@ -19,6 +19,60 @@ from landcoverloss.utils.http import request_to_microservice
 #example: https://github.com/resource-watch/adapter-earth-engine/blob/master/adapterearthengine/utils/http.py
 #make geometry an argument... for geostore you get a hash... send it to the geostore, get the geometry, transform geostore to esri json
 
+#Get geojson from geostore
+@endpoints.route('/landcoverloss', methods=['GET'])
+def get_geostore():
+    logging.info('requesting geojson from geostore')
+
+    geo = request.args.get('geometry', None)
+
+    if not geo:
+        return jsonify({'errors': [{
+            'status': '400',
+            'title': 'geostore ID should be included'
+            }]
+        }), 400
+
+    try:
+        geostore = 'http://production-api.globalforestwatch.org/geostore/{0}'.format(geo)
+
+    except Error:
+        return jsonify({'errors': [{
+            'status': '404',
+            'detail': 'endpoint not found'
+            }]
+        }), 404
+
+    geo_resp = requests.get(url=geostore)
+    geojson = geo_resp.json()
+
+    return geojson
+
+def get_esri_json():
+
+    logging.info('converting geojson to esri json')
+
+    geo = get_geostore()
+
+    staging_token = os.getenv('CT_Token')
+
+    headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer {0}'.format(staging_token)}
+
+    payload =  {'geom': geo}
+
+    try:
+        r = requests.post("localhost:9000/geojson-ms-example/to-esri", headers=headers, json=payload)
+        esri_json = r.json()
+        print esri_json
+        return esri_json
+
+    except Error:
+         return jsonify({'errors': [{
+             'status': '500',
+             'title': 'Service unavailable'
+             }]
+         }), 500
+
 @endpoints.route('/landcoverloss', methods=['GET'])
 def make_request():
     """Make request to image service"""
@@ -26,24 +80,9 @@ def make_request():
 
     shape = 'esriGeometryPolygon'
 
-    geo = request.args.get('geometry', None)
+    geom = get_esri_json()
 
-    if not geo:
-        return jsonify({'errors': [{
-            'status': '400',
-            'title': 'esri json should be included'
-            }]
-        }), 400
-
-    #send geo to geostore and return geojson
-
-    geostore = 'http://production-api.globalforestwatch.org/geostore/{0}'.format(geo)
-
-    geo_resp = requests.get(url=geostore)
-    geojson = geo_resp.json()
-
-
-    direct_geometry = urllib.unquote(geo).decode()
+    # direct_geometry = urllib.unquote(geo).decode()
 
     #geometry = '{"type":"Polygon","rings":[[[-52.108154296875,-8.537565350804018],[-52.437744140625,-9.156332560046778],[-52.020263671875,-9.329831355689176],[-51.690673828125,-8.733077421211563],[-52.108154296875,-8.537565350804018]]]}'
 
