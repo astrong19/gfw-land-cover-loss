@@ -49,6 +49,7 @@ def get_geostore():
     r = {'geom': geojson['data']['attributes']['geojson']['features'][0]['geometry']}
 
     return jsonify(r), 200
+    get_esri_json()
 
 @endpoints.route('/geojson-ms-example/to-esri', methods=['GET'])
 def get_esri_json():
@@ -71,6 +72,7 @@ def get_esri_json():
         logging.info("esri json: %s" %(esri_json))
         return jsonify(rings), 200
         logging.info("esri json created")
+        make_request()
 
     except Error:
          return jsonify({'errors': [{
