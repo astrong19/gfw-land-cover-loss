@@ -25,6 +25,7 @@ def get_geostore():
     logging.info('requesting geojson from geostore')
 
     geo = request.args.get('geometry', None)
+    logging.info('geo specified: %s' %(geo))
 
     if not geo:
         return jsonify({'errors': [{
@@ -45,9 +46,9 @@ def get_geostore():
 
     geo_resp = requests.get(url=geostore)
     geojson = geo_resp.json()
-    print 'here is the geojson: %s' %(geojson)
+    r = {'geometry': geojson['data']['attributes']['geojson']['features'][0]['geometry']}
 
-    return jsonify(geojson), 200
+    return jsonify(r), 200
 
 def get_esri_json():
 
@@ -64,7 +65,7 @@ def get_esri_json():
     try:
         r = requests.post("localhost:9000/geojson-ms-example/to-esri", headers=headers, json=payload)
         esri_json = r.json()
-        print esri_json
+        logging.info("esri json: %s" %(esri_json))
         return jsonify(esri_json), 200
 
     except Error:
