@@ -78,7 +78,7 @@ def get_esri_json():
              }]
          }), 500
 
-@endpoints.route('/landcoverloss', methods=['GET'])
+@endpoints.route('/landcoverloss', methods=['POST'])
 def make_request():
     """Make request to image service"""
     logging.info('pinging image service')
