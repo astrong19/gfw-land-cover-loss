@@ -70,6 +70,7 @@ def get_esri_json():
         rings = response['rings']
         logging.info("esri json: %s" %(esri_json))
         return jsonify(rings), 200
+        logging.info("esri json created')
 
     except Error:
          return jsonify({'errors': [{
