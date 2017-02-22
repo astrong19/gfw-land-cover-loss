@@ -46,7 +46,7 @@ def get_geostore():
 
     geo_resp = requests.get(url=geostore)
     geojson = geo_resp.json()
-    r = {'geometry': geojson['data']['attributes']['geojson']['features'][0]['geometry']}
+    r = {'geom': geojson['data']['attributes']['geojson']['features'][0]['geometry']}
 
     return jsonify(r), 200
 
@@ -60,13 +60,15 @@ def get_esri_json():
 
     headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer {0}'.format(staging_token)}
 
-    payload =  {'geom': geo}
+    # payload =  {'geom': geo}
+    payload = geo
 
     try:
         r = requests.post("localhost:9000/geojson-ms-example/to-esri", headers=headers, json=payload)
         esri_json = r.json()
+        rings = response['rings']
         logging.info("esri json: %s" %(esri_json))
-        return jsonify(esri_json), 200
+        return jsonify(rings), 200
 
     except Error:
          return jsonify({'errors': [{
@@ -82,7 +84,10 @@ def make_request():
 
     shape = 'esriGeometryPolygon'
 
-    geom = get_esri_json()
+    geom = {
+            'type': 'Polygon',
+            'rings': get_esri_json()
+    }
 
     # direct_geometry = urllib.unquote(geo).decode()
 
