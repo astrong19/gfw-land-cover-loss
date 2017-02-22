@@ -50,6 +50,7 @@ def get_geostore():
 
     return jsonify(r), 200
 
+@endpoints.route('/geojson-ms-example/to-esri', methods=['GET'])
 def get_esri_json():
 
     logging.info('converting geojson to esri json')
