@@ -51,7 +51,7 @@ def get_geostore():
     return jsonify(r), 200
     get_esri_json()
 
-@endpoints.route('/geojson-ms-example/to-esri', methods=['GET'])
+# @endpoints.route('/geojson-ms-example/to-esri', methods=['GET'])
 def get_esri_json():
 
     logging.info('converting geojson to esri json')
@@ -81,7 +81,7 @@ def get_esri_json():
              }]
          }), 500
 
-@endpoints.route('/landcoverloss', methods=['POST'])
+# @endpoints.route('/landcoverloss', methods=['POST'])
 def make_request():
     """Make request to image service"""
     logging.info('pinging image service')
